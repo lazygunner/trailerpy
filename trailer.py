@@ -10,9 +10,15 @@ u = ''
 p = ''
 
 
-class RemoteDownloadTrailers(restful.Resource):
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
+class HelloWorld(restful.Resource):
     def get(self):
-        return {'data': 'welcome'}
+        return {'hello': 'world'}
 
     def post(self):
         xlr = XunLeiRemote(u, p)
@@ -20,9 +26,10 @@ class RemoteDownloadTrailers(restful.Resource):
         pid = peer_list[0]['pid']
         download_link = request.form['download_link']
         ret = xlr.add_urls_to_remote(pid, 'C:/MovieTrailers/', [download_link])
+        print ret
         return ret
 
-api.add_resource(RemoteDownloadTrailers, '/')
+api.add_resource(HelloWorld, '/')
 
 if __name__ == '__main__':
     app.run(debug=True)
